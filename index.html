@@ -1,342 +1,309 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Cotización · Agentes de IA Vendedores · Ferreterías</title>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-  <style>
-    :root{
-      --bg:#0b0d12; --card:#0f1219; --border:rgba(255,255,255,.10);
-      --text:#e6e7eb; --muted:#a7adbb; --acc1:#00e1ff; --acc2:#7c3aed; --ring:#5eead4;
-      --title:'Plus Jakarta Sans',sans-serif; --body:'Plus Jakarta Sans',sans-serif; --mono:'JetBrains Mono',monospace;
-    }
-    *{box-sizing:border-box;margin:0;padding:0}
-    html{scroll-behavior:smooth}
-    body{
-      background:radial-gradient(1200px 600px at 80% -10%, rgba(124,58,237,.25), transparent 60%),
-                  radial-gradient(800px 500px at -20% 10%, rgba(0,225,255,.18), transparent 60%),
-                  var(--bg);
-      color:var(--text);font-family:var(--body);line-height:1.6;overflow-x:hidden;
-    }
-    .container{max-width:1180px;margin:0 auto;padding:40px}
-    .shell{display:grid;grid-template-columns:280px 1fr;gap:24px}
-    @media(max-width:980px){.shell{grid-template-columns:1fr}}
-
-    /* Sidebar */
-    .side{position:sticky;top:16px;height:calc(100vh - 32px);border:1px solid var(--border);border-radius:20px;background:rgba(15,18,25,.85);backdrop-filter:blur(10px);padding:22px;box-shadow:0 0 0 1px rgba(255,255,255,.04), 0 30px 60px rgba(0,0,0,.35);display:flex;flex-direction:column;gap:12px;overflow:hidden}
-    .logo{font:800 22px var(--mono);letter-spacing:.08em;text-transform:uppercase;background:linear-gradient(90deg,var(--acc1),var(--acc2));-webkit-background-clip:text;background-clip:text;color:transparent}
-    .tag{font:700 11px var(--mono);color:var(--muted);text-transform:uppercase;margin-bottom:8px}
-    .nav{display:flex;flex-direction:column;gap:8px;flex:1 1 auto;overflow:auto;padding-right:4px;scrollbar-width:thin}
-    .nav a{display:flex;align-items:center;gap:10px;padding:10px 12px;text-decoration:none;color:var(--text);border-radius:12px;background:rgba(255,255,255,.03);transition:all .25s ease;border:1px solid var(--border);font-size:14px;line-height:1.2}
-    .nav a:hover{background:rgba(255,255,255,.07);transform:translateX(4px);border-color:rgba(255,255,255,.18)}
-    .nav a.active{background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.02));border-color:transparent;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18),0 0 0 2px rgba(124,58,237,.25)}
-    .nav .dot{width:8px;height:8px;border-radius:50%;background:linear-gradient(90deg,var(--acc1),var(--acc2));box-shadow:0 0 10px rgba(124,58,237,.6)}
-
-    /* Cards & typography */
-    section{scroll-margin-top:120px;margin-bottom:40px}
-    .card{border:1px solid var(--border);border-radius:20px;padding:40px;background:linear-gradient(180deg,rgba(21,24,33,0.9),rgba(15,18,25,0.95));box-shadow:0 20px 50px rgba(0,0,0,0.40), inset 0 0 0 1px rgba(255,255,255,.04)}
-    .title{position:relative;font-family:var(--title);font-weight:800;font-size:2.2rem;line-height:1.2;margin-bottom:16px;letter-spacing:-0.02em;color:var(--text)}
-    
-    .kicker{font:800 12px var(--mono);color:#9bbcff;letter-spacing:.22em;text-transform:uppercase;margin-bottom:12px;opacity:.9}
-    .sub{color:var(--muted);margin-bottom:12px}
-    .lead{font-size:1.1rem;color:#d7d7d7;margin-bottom:20px;max-width:900px;line-height:1.75}
-    ul{margin-left:18px;margin-top:8px}
-    ol{margin-left:22px;margin-top:8px}
-    li{margin-bottom:6px}
-    strong{color:#a5b4fc}
-    .badge{display:inline-block;border:1px solid var(--border);border-radius:999px;padding:.3rem .75rem;font:700 11px var(--mono);color:#cfcfcf;background:rgba(255,255,255,.04);margin-bottom:6px}
-    .grid{display:grid;gap:16px}
-    .cols-2{grid-template-columns:repeat(2,1fr)}
-    .cols-3{grid-template-columns:repeat(3,1fr)}
-    @media(max-width:980px){.cols-2,.cols-3{grid-template-columns:1fr}}
-
-    .price{font:900 28px var(--title);letter-spacing:-.02em;margin-top:6px}
-    .pill{display:inline-block;padding:.35rem .7rem;border:1px solid var(--border);border-radius:999px;font:700 11px var(--mono);color:#cfcfcf;background:linear-gradient(90deg,rgba(255,255,255,.06),rgba(255,255,255,.03));box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
-    .table{width:100%;border-collapse:collapse;margin-top:8px}
-    .table th,.table td{border:1px solid var(--border);padding:10px;border-radius:8px}
-    .muted{color:var(--muted)}
-    .ok{color:#86c5ff}
-
-    .credits{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-top:1px solid var(--border);color:var(--muted)}
-    @media(max-width:680px){.credits{flex-direction:column;gap:8px;align-items:flex-start}}
-    /* Scrollbar sutil para el menú */
-    .nav::-webkit-scrollbar{width:6px}
-    .nav::-webkit-scrollbar-track{background:transparent}
-    .nav::-webkit-scrollbar-thumb{background:linear-gradient(var(--acc2),var(--acc1));border-radius:999px;opacity:.5}
-    .nav{scrollbar-color:rgba(124,58,237,.6) transparent}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SKIMS x Victoria Beckham: A Masterclass in Viral Marketing | Marketing Insider</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background-color: #f8f9fa;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: opacity 0.3s;
+        }
+        
+        .nav-links a:hover {
+            opacity: 0.8;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: white;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+            border-radius: 8px;
+        }
+        
+        .article-meta {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .category {
+            background: #667eea;
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+            color: #1a1a1a;
+        }
+        
+        h2 {
+            font-size: 1.8rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: #2d3748;
+        }
+        
+        p {
+            margin-bottom: 1.2rem;
+            font-size: 1.05rem;
+            color: #2d3748;
+        }
+        
+        .featured-image {
+            width: 100%;
+            height: 350px;
+            background: linear-gradient(135deg, #667eea22 0%, #764ba233 100%);
+            border-radius: 8px;
+            margin: 2rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: #667eea;
+            font-weight: 600;
+        }
+        
+        .quote-box {
+            background: #f7fafc;
+            border-left: 4px solid #667eea;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            font-style: italic;
+            font-size: 1.2rem;
+            color: #4a5568;
+            text-align: center;
+        }
+        
+        .key-points {
+            background: #fff5f5;
+            border: 2px solid #feb2b2;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .key-points h3 {
+            margin-top: 0;
+            margin-bottom: 1rem;
+            color: #c53030;
+        }
+        
+        .points-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .point {
+            background: white;
+            padding: 1rem;
+            border-radius: 6px;
+            border-left: 3px solid #667eea;
+        }
+        
+        .point strong {
+            color: #667eea;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        
+        .author-box {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 3rem;
+            padding: 1.5rem;
+            background: #f7fafc;
+            border-radius: 8px;
+        }
+        
+        .author-avatar {
+            width: 60px;
+            height: 60px;
+            background: #667eea;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+        
+        .author-info h4 {
+            margin-bottom: 0.3rem;
+            color: #2d3748;
+        }
+        
+        .author-info p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: #718096;
+        }
+        
+        footer {
+            background: #2d3748;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .highlight {
+            background: #fef5e7;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <div class="shell">
-      <aside class="side">
-        <div class="logo">Cotización</div>
-        <div class="tag">Agentes de IA · Ferreterías (2 Sucursales)</div>
-        <nav class="nav" id="nav">
-          <a href="#intro" class="active"><span class="dot"></span> Introducción</a>
-          <a href="#objetivo"><span class="dot"></span> Objetivo</a>
-          <a href="#arquitectura"><span class="dot"></span> Arquitectura & Flujo</a>
-          <a href="#integraciones"><span class="dot"></span> Integraciones</a>
-          <a href="#alcance"><span class="dot"></span> Alcance de Instalación</a>
-          <a href="#orquestacion"><span class="dot"></span> Orquestación & Herramientas</a>
-          <a href="#operacion"><span class="dot"></span> Soporte de Arranque</a>
-          <a href="#economico"><span class="dot"></span> Resumen Económico</a>
-          <a href="#plazos"><span class="dot"></span> Plazos</a>
-          <a href="#pasos"><span class="dot"></span> Próximos Pasos</a>
-          <a href="#condiciones"><span class="dot"></span> Condiciones</a>
+    <header>
+        <nav>
+            <div class="logo">Marketing Insider</div>
+            <ul class="nav-links">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Case Studies</a></li>
+                <li><a href="#">Strategy</a></li>
+                <li><a href="#">Industry News</a></li>
+                <li><a href="#">About</a></li>
+            </ul>
         </nav>
-      </aside>
+    </header>
 
-      <main>
-        <!-- Intro -->
-        <section id="intro" class="card hero">
-          <p class="kicker">Propuesta</p>
-          <h2 class="title">2 Agentes de IA Vendedores para dos ferreterías · omnicanal (Instagram, Messenger y WhatsApp)</h2>
-          <p class="lead">Desarrollaremos e implementaremos dos agentes conversacionales especializados en ventas B2C/B2B para cada sucursal de ferretería. Cada agente administrará un inventario de <strong>1.200 productos</strong> conectado a <strong>SAP Business One</strong> mediante un <strong>RAG</strong> soportado por base vectorial, y automatizará atención y cierre con pagos vía <strong>Mercado Pago</strong>. Se incluye derivación humana en momentos críticos y seguimiento post-venta con plantillas oficiales.</p>
-          <p class="sub">Tono directo y orientado a conversión. Sin tecnicismos innecesarios para el cliente final.</p>
-        </section>
-
-        <!-- Objetivo -->
-        <section id="objetivo" class="card">
-          <p class="kicker">Meta de negocio</p>
-          <h2 class="title">Incrementar ventas y reducir carga operativa</h2>
-          <ul>
-            <li>Responder consultas y <strong>cerrar ventas</strong> 24/7 en IG, Messenger y WhatsApp.</li>
-            <li>Mostrar stock, precios, envío y alternativas cuando falten productos.</li>
-            <li>Generar <strong>links de pago</strong> y registrar órdenes pagadas en <strong>Google Sheets</strong>.</li>
-            <li>Derivar a humano en envíos, consultoría técnica y <strong>descuentos &gt; USD 500</strong>.</li>
-            <li>Enviar <strong>seguimientos</strong> (abandonos, confirmaciones, NPS) con plantillas oficiales.</li>
-          </ul>
-        </section>
-
-        <!-- Arquitectura & Flujo -->
-        <section id="arquitectura" class="card">
-          <p class="kicker">Diseño</p>
-          <h2 class="title">Arquitectura y flujo de extremo a extremo</h2>
-          <div class="grid cols-2">
-            <div>
-              <ul>
-                <li><strong>Agente orquestador</strong> por sucursal: decide la tarea y activa herramientas.</li>
-                <li><strong>Agente vendedor</strong> (rol ventas) conectado a inventario y FAQs.</li>
-                <li><strong>RAG</strong> sobre catálogo SAP B1 (descripciones, SKUs, compatibilidades).</li>
-                <li><strong>Vector DB</strong> con refresco programado <strong>3 veces al día</strong>.</li>
-                <li><strong>Redis</strong> para entender y agrupar múltiples mensajes del usuario.</li>
-                <li>Generación de <strong>links de pago</strong> con API de Mercado Pago.</li>
-                <li>Envío de <strong>imágenes de productos</strong> y recepción de texto/audio + imagen opcional.</li>
-                <li><strong>Handoff humano</strong> por reglas (envíos, consultas técnicas, descuentos altos).</li>
-              </ul>
-            </div>
-            <div>
-              <ul>
-                <li>Canales: <strong>WhatsApp (Cloud API)</strong>, <strong>Instagram</strong> y <strong>Messenger</strong> (APIs oficiales).</li>
-                <li>Seguimientos con <strong>plantillas aprobadas</strong> (órdenes, pagos, entrega).</li>
-                <li>Registro de ventas confirmadas en <strong>Google Sheets</strong>.</li>
-                <li>Métricas: consultas, conversión, ticket promedio, ingresos por canal.</li>
-                <li>Observabilidad: logs, dashboards, alertas de caídas y stock.</li>
-              </ul>
-            </div>
-          </div>
-        </section>
-
-        <!-- Integraciones -->
-        <section id="integraciones" class="card">
-          <p class="kicker">Conectores</p>
-          <h2 class="title">Integraciones incluidas</h2>
-          <ul>
-            <li><strong>SAP Business One</strong>: extracción de catálogos y existencias.</li>
-            <li><strong>Base de datos vectorial</strong> (RAG) con actualizaciones automáticas 3×día.</li>
-            <li><strong>Meta</strong>: WhatsApp Cloud API, Instagram Messaging API y Messenger.</li>
-            <li><strong>Mercado Pago</strong>: creación de links, validación de cobros y estados.</li>
-            <li><strong>Google Sheets</strong>: registro de órdenes pagadas y reportería rápida.</li>
-            <li><strong>Redis</strong>: contexto conversacional y batching de mensajes.</li>
-          </ul>
-        </section>
-
-        <!-- Alcance de instalación -->
-        <section id="alcance" class="card">
-          <p class="kicker">Alcance</p>
-          <h2 class="title">Qué incluye la instalación</h2>
-          <div class="grid cols-2">
-            <div>
-              <ul>
-                <li>Levantamiento de flujos de venta y guiones por sucursal.</li>
-                <li>Diseño de intents base (consulta, stock, compatibilidad, medios de pago, envío).</li>
-                <li>Set-up de <strong>2 agentes</strong> (uno por sucursal) con catálogos de <strong>1.200 productos</strong> c/u.</li>
-                <li>Conexión a SAP B1 y pipeline de ingesta a vector DB.</li>
-                <li>Configuración de orquestador y herramientas (inventario, FAQs, pagos, hojas).</li>
-                <li>Implementación de plantillas oficiales de seguimiento.</li>
-              </ul>
-            </div>
-            <div>
-              <ul>
-                <li>Handoff humano por reglas (envíos, consultoría, descuentos &gt; USD 500).</li>
-                <li>Pruebas E2E y validación de casos críticos por canal.</li>
-                <li>Dashboard de métricas esenciales y alertas.</li>
-                <li>Capacitación breve a equipo comercial.</li>
-                <li>Documentación de uso y operación.</li>
-              </ul>
-            </div>
-          </div>
-        </section>
-
-        <!-- Orquestación y herramientas -->
-        <section id="orquestacion" class="card">
-          <p class="kicker">Agentes</p>
-          <h2 class="title">Orquestación y herramientas disponibles</h2>
-          <ul>
-            <li><strong>Herramienta Inventario</strong>: consulta de stock/precio/alternativas vía RAG.</li>
-            <li><strong>Herramienta FAQs</strong>: base de conocimiento del negocio (políticas, garantías, marcas).</li>
-            <li><strong>Herramienta Pagos</strong>: links de Mercado Pago y validación de estado.</li>
-            <li><strong>Herramienta Registro</strong>: escritura en Google Sheets para órdenes pagadas.</li>
-            <li><strong>Herramienta Mensajería</strong>: envío de textos, audios y <strong>imágenes</strong> de productos.</li>
-            <li><strong>Herramienta Handoff</strong>: derivación a humano y cierre de loop.</li>
-          </ul>
-        </section>
-
-        <!-- Operación mensual -->
-        <section id="operacion" class="card">
-          <p class="kicker">Soporte de arranque</p>
-          <h2 class="title">Incluido sin costo mensual</h2>
-          <ul>
-            <li><strong>Correcciones en producción</strong> planificadas en <strong>Semanas 7 y 8</strong> (bugs y ajustes menores).</li>
-            <li><strong>2 clases</strong> explicando el funcionamiento del flujo (operación y troubleshooting).</li>
-            <li>Guía rápida y checklist de operación.</li>
-          </ul>
-          <p class="sub"><em>No se incluye mantenimiento mensual continuo.</em></p>
-        </section>
-
-        <!-- Económico -->
-        <section id="economico" class="card">
-          <p class="kicker">Precio</p>
-          <h2 class="title">Presupuesto único de implementación</h2>
-          <div>
-            <span class="pill">Implementación end‑to‑end · 2 agentes + integraciones</span>
-            <div class="price">USD 3.200</div>
-            <p class="sub">Incluye <strong>1 semana</strong> de corrección y arreglo de errores post‑producción y <strong>2 clases de capacitación</strong> para el equipo.</p>
-          </div>
-          <table class="table" style="margin-top:16px">
-            <thead><tr><th>Ítem</th><th>Detalle</th><th>Precio</th></tr></thead>
-            <tbody>
-              <tr><td>Canales</td><td>WhatsApp, Instagram y Messenger por sucursal (APIs oficiales)</td><td class="muted">incluido</td></tr>
-              <tr><td>RAG & Vector DB</td><td>Pipeline + 3 actualizaciones/día</td><td class="muted">incluido</td></tr>
-              <tr><td>Pagos</td><td>Links de Mercado Pago + verificación</td><td class="muted">incluido</td></tr>
-              <tr><td>Google Sheets</td><td>Órdenes pagadas y reportería</td><td class="muted">incluido</td></tr>
-              <tr><td>Handoff</td><td>Derivación humana por reglas</td><td class="muted">incluido</td></tr>
-              <tr><td>Costos variables</td><td>Meta/WhatsApp, Mercado Pago, hosting, DB/Redis, mensajería</td><td><em>según consumo</em></td></tr>
-            </tbody>
-          </table>
-          <p class="sub"><strong>Nota:</strong> Este presupuesto <strong>no</strong> contempla mantenimiento mensual.</p>
-        </section>
-
-        <!-- Plazos -->
-        <section id="plazos" class="card">
-          <p class="kicker">Implementación</p>
-          <h2 class="title">Plazos y plan de trabajo</h2>
-          <ul>
-            <li><strong>Semana 1:</strong> Kick-off, accesos, diseño de flujos y guiones.</li>
-            <li><strong>Semanas 2–3:</strong> Integraciones (SAP B1, RAG, pagos, canales Meta).</li>
-            <li><strong>Semana 4:</strong> Pruebas E2E, ajustes, plantillas y handoff.</li>
-            <li><strong>Semana 5:</strong> Piloto controlado por sucursal.</li>
-            <li><strong>Semana 6:</strong> Go-live.</li>
-            <li><strong>Semana 7:</strong> Corrección de errores priorizados en producción + <em>Clase 1</em> explicando el funcionamiento del flujo y la operación diaria.</li>
-            <li><strong>Semana 8:</strong> Cierre de fixes pendientes + <em>Clase 2</em> (profundización y resolución de incidentes frecuentes).</li>
-          </ul>
-        </section>
-
-        <!-- Pasos a seguir -->
-        <section id="pasos" class="card">
-          <p class="kicker">Ejecución</p>
-          <h2 class="title">Próximos pasos</h2>
-          <ol>
-            <li>Dar el OK a esta propuesta.</li>
-            <li>Reunión de kick-off con el equipo.</li>
-            <li>Abonar el <strong>50%</strong> de la instalación.</li>
-            <li>Inicio del desarrollo según plan (8 semanas).</li>
-          </ol>
-        </section>
-
-        <!-- Condiciones -->
-        <section id="condiciones" class="card">
-          <p class="kicker">Términos</p>
-          <h2 class="title">Condiciones comerciales</h2>
-          <ul>
-            <li>Oferta válida por <strong>3 días</strong> desde su emisión.</li>
-            <li>Saldo de instalación (50%) antes de la puesta en marcha.</li>
-            <li>Costos de terceros se facturan según consumo.</li>
-            <li>El SLA excluye indisponibilidad de proveedores externos (APIs, pasarelas, hosting).</li>
-            <li>Se requiere acceso a SAP B1 (lectura) y cuentas oficiales de Meta/Mercado Pago.</li>
-            <li>Impuestos no incluidos.</li>
-          </ul>
-        </section>
-
-        <div class="credits">
-          <span>Agentes de IA Vendedores · Ferreterías (2 sucursales)</span>
-          <span>Emitida: <span id="emitida"></span></span>
+    <div class="container">
+        <span class="category">CASE STUDY</span>
+        
+        <h1>SKIMS x Victoria Beckham: A Masterclass in Viral Marketing</h1>
+        
+        <div class="article-meta">
+            <span>📅 March 15, 2024</span>
+            <span>✍️ By Sarah Mitchell</span>
+            <span>⏱️ 4 min read</span>
         </div>
-      </main>
+
+        <div class="featured-image">
+            [Campaign Visual: SKIMS x Victoria Beckham 2024]
+        </div>
+
+        <p><strong>In 2024, SKIMS and Victoria Beckham created one of the year's most talked-about campaigns—not with a big budget or complex production, but with one simple, powerful idea.</strong></p>
+
+        <h2>The Campaign</h2>
+
+        <p>The collaboration featured Victoria Beckham sitting casually in SKIMS underwear, delivering a single memorable line that took social media by storm:</p>
+
+        <div class="quote-box">
+            "I'm trying to think of something intelligent to say, but I'm just too busy looking amazing."
+        </div>
+
+        <p>This unexpected moment of self-aware humor from the typically serious fashion icon created instant virality and sparked millions of conversations online.</p>
+
+        <h2>Why It Worked</h2>
+
+        <p><span class="highlight">Authenticity over perfection.</span> Victoria Beckham is known for her polished, serious image in the fashion world. This campaign showed a different side—confident, funny, and relatable. The self-deprecating humor felt genuine and refreshing.</p>
+
+        <p><span class="highlight">Strategic simplicity.</span> Instead of elaborate production, SKIMS chose minimalism: one set, natural lighting, and one powerful message. This simplicity made the campaign instantly shareable on social media, where clear, concise content performs best.</p>
+
+        <p><span class="highlight">Perfect brand alignment.</span> SKIMS built its reputation on body confidence and comfort. Victoria Beckham brought luxury credibility. Together, they created a message about unapologetic confidence that resonated with both audiences.</p>
+
+        <div class="key-points">
+            <h3>Key Success Factors</h3>
+            <div class="points-grid">
+                <div class="point">
+                    <strong>Viral Reach</strong>
+                    Spread across Instagram, TikTok, and Twitter within 24 hours
+                </div>
+                <div class="point">
+                    <strong>Earned Media</strong>
+                    Extensive coverage in fashion and business publications
+                </div>
+                <div class="point">
+                    <strong>User Engagement</strong>
+                    High sharing, memes, and social conversation
+                </div>
+                <div class="point">
+                    <strong>Brand Impact</strong>
+                    Increased searches for both SKIMS and Victoria Beckham
+                </div>
+            </div>
+        </div>
+
+        <h2>The Marketing Lesson</h2>
+
+        <p>This campaign proves that in today's oversaturated marketing landscape, <strong>less can truly be more</strong>. The most impactful campaigns aren't always the most expensive or elaborate—they're the ones that connect authentically with audiences.</p>
+
+        <p>By challenging expectations, embracing humor, and keeping the message simple, SKIMS created a campaign that transcended traditional advertising to become a cultural moment.</p>
+
+        <p><strong>The takeaway?</strong> When you have the right message, the right partner, and the confidence to keep things simple, you don't need anything else. Sometimes you're just too busy looking amazing to overthink it.</p>
+
+        <div class="author-box">
+            <div class="author-avatar">SM</div>
+            <div class="author-info">
+                <h4>Sarah Mitchell</h4>
+                <p>Senior Marketing Analyst specializing in brand strategy and celebrity partnerships</p>
+            </div>
+        </div>
     </div>
-  </div>
 
-<script>
-// --- Navegación: selecciona lo que tocas y mantiene activo correcto ---
-const links=[...document.querySelectorAll('#nav a')];
-const sections=links.map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean);
-const OFFSET=130; // compensación superior para que el H2 se vea completo
-
-function setActive(id){
-  links.forEach(l=>l.classList.toggle('active', l.getAttribute('href')==='#'+id));
-}
-function anchorTop(el){
-  const h2=el.querySelector('h2.title');
-  const anchor=h2||el;
-  return anchor.getBoundingClientRect().top + window.scrollY;
-}
-function onScroll(){
-  const y=window.scrollY + OFFSET + 1; // línea de lectura
-  let cur=sections[0]?.id;
-  for(const sec of sections){
-    if(anchorTop(sec) <= y) cur=sec.id; else break;
-  }
-  if(window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2){
-    cur=sections[sections.length-1]?.id || cur;
-  }
-  if(cur) setActive(cur);
-}
-function scrollToSection(target){
-  const id=target.id;
-  const baseTop = anchorTop(target);
-  // Ajustes finos por sección: bajar un poco más Arquitectura & Flujo y Resumen Económico
-  const EXTRA_BY_ID = { arquitectura: 24, economico: 24 };
-  const extra = EXTRA_BY_ID[id] || 0; // píxeles adicionales a desplazar hacia abajo
-  const y = baseTop - (OFFSET-6) + extra;
-  setActive(id);
-  window.scrollTo({top:Math.max(0,y), behavior:'smooth'});
-  history.replaceState(null,'','#'+id);
-}
-links.forEach(a=>a.addEventListener('click',e=>{
-  const href=a.getAttribute('href');
-  if(href && href.startsWith('#')){
-    e.preventDefault();
-    const target=document.querySelector(href);
-    if(target) scrollToSection(target);
-  }
-}));
-['load','resize','scroll'].forEach(ev=>window.addEventListener(ev,onScroll,{passive:true}));
-window.addEventListener('hashchange',()=>{
-  const id=location.hash.slice(1);
-  const target=document.getElementById(id);
-  if(target) scrollToSection(target);
-});
-const emitEl=document.getElementById('emitida'); if(emitEl){ emitEl.textContent='Ignacio Arruvito'; }
-
-// --- Autotests mínimos para validar navegación ---
-(function(){
-  const ids=[...document.querySelectorAll('#nav a')].map(a=>a.getAttribute('href').slice(1));
-  const missing=ids.filter(id=>!document.getElementById(id));
-  if(missing.length){ console.warn('IDs de secciones inexistentes en el documento:', missing); }
-  if(typeof scrollToSection !== 'function'){ console.error('scrollToSection no está definida'); }
-})();
-</script>
+    <footer>
+        <p>&copy; 2024 Marketing Insider. All rights reserved.</p>
+    </footer>
 </body>
 </html>
